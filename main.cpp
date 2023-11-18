@@ -8,6 +8,8 @@
 #define GL_GLEXT_PROTOTYPES
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
+float offset = 0.0f;
+float vertical = 0.0f;
 
 const char *vertexShaderSource = "#version 330 core\n"
                                  "layout (location = 0) in vec3 aPos;\n"
@@ -41,8 +43,6 @@ void processInput(GLFWwindow *window);
 bool esc = true;
 int main()
 {
-    // glfw: initialize and configure
-    // ------------------------------
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -52,8 +52,6 @@ int main()
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
-    // glfw window creation
-    // --------------------
     GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
     if (window == NULL)
     {
@@ -64,31 +62,25 @@ int main()
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-    // glad: load all OpenGL function pointers
-    // ---------------------------------------
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
 
-    Shader shader("../shader.vs", "../shader.fs");
+    Shader shader("shader.vs", "shader.fs");
 
-    // set up vertex data (and buffer(s)) and configure vertex attributes
-    // ------------------------------------------------------------------
     float vertices[] = {
-        // positions         // colors
-        0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,  // bottom right
-        -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom left
-        0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f    // top
+        // positions         // colorslbkr
+        0.0f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom right
+        -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom left
+        0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f   // top
     };
-
 
     unsigned int VBO[2], VAO[2], EBO;
     glGenVertexArrays(2, VAO);
     glGenBuffers(2, VBO);
 
-    // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
     glBindVertexArray(VAO[0]);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
@@ -108,26 +100,31 @@ int main()
 
     glGenBuffers(1, &EBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-
-    // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+    
+    bool increment = true;
 
-    // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
-    // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
-    glBindVertexArray(0);
-
-    // uncomment this call to draw in wireframe polygons.
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-    // render loop
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    // -----------
     while (!glfwWindowShouldClose(window))
     {
         // input
         // -----
         processInput(window);
         shader.use();
+        //  if (offset >= 1.0) {
+        //     increment = false; // Change direction to decrement
+        // } else if (offset <= -1.0) {
+        //     increment = true; // Change direction to increment
+        // }
+
+        // // Adjust myNumber based on the direction
+        // if (increment) {
+        //     offset += 0.01;
+        // } else {
+        //     offset -= 0.01;
+        // }
+        
+        shader.setFloat("offset", offset);
+        shader.setFloat("vertical",vertical);
 
         // render
         // ------
@@ -147,13 +144,6 @@ int main()
         glfwPollEvents();
     }
 
-    // optional: de-allocate all resources once they've outlived their purpose:
-    // ------------------------------------------------------------------------
-    // glDeleteVertexArrays(2, VAO);
-    // glDeleteBuffers(2, VBO);
-
-    // glfw: terminate, clearing all previously allocated GLFW resources.
-    // ------------------------------------------------------------------
     glfwTerminate();
     return 0;
 }
@@ -178,7 +168,22 @@ void processInput(GLFWwindow *window)
         glfwDestroyWindow(window);
         esc = false;
     }
-    if (glfwGetKey(window, GLFW_KEY_KP_ADD) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
     {
+        if(offset > -1.0f)
+        offset -= 0.01;
+        
+    }
+    if(glfwGetKey(window,GLFW_KEY_RIGHT) == GLFW_PRESS){
+        if(offset < 1.0f)
+        offset += 0.01;
+    }
+    if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS){
+        if(vertical < 1.0f)
+        vertical += 0.01;
+    }
+    if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){
+        if(vertical > -1.0f)
+        vertical -= 0.01;
     }
 }

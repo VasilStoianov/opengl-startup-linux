@@ -31,9 +31,10 @@ public:
             vShaderStream << vShaderFile.rdbuf();
             fShaderStream << fShaderFile.rdbuf();
             vShaderFile.close();
-            fShaderFile.clear();
+            fShaderFile.close();
             vertexCode = vShaderStream.str();
             fragmentCode = fShaderStream.str();
+            std::cout<< vertexCode << " + " << fragmentCode<<std::endl;
         }
         catch (const std::ifstream::failure e)
         {
