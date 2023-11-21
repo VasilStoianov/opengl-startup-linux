@@ -46,6 +46,7 @@ int main()
     Shader shader("shader.vs", "shader.fs");
 
     float vertices[] = {
+        // positions          // colors           // texture coords
         0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,   // top right
         0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,  // bottom right
         -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
@@ -79,11 +80,10 @@ int main()
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
-    
-    Image image("container.jpg",0);
+    Image image("container.jpg", 0);
 
-    Image image2("awesomeface.png",1);
-        shader.use();
+    Image image2("awesomeface.png", 1);
+    shader.use();
 
     shader.setInt("texture1", 0);
     shader.setInt("texture2", 1);
@@ -107,13 +107,14 @@ int main()
         // }
 
         // render
-        // ------   
+        // ------
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-       glActiveTexture(GL_TEXTURE0);
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, image.texture);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, image2.texture);
+        shader.setFloat("zooming", vertical);
 
         // render container
         shader.use();
@@ -166,12 +167,15 @@ void processInput(GLFWwindow *window)
     }
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
     {
-        if (vertical < 1.0f)
-            vertical += 0.01;
+        
+            vertical += 0.05;
+            std::cout<<vertical<<std::endl;
+        
     }
     if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
     {
-        if (vertical > -1.0f)
-            vertical -= 0.01;
+       
+            vertical -= 0.05;
+            std::cout<<vertical<<std::endl;
     }
 }
