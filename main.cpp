@@ -5,6 +5,10 @@
 #include <math.h>
 #include "shader.h"
 #include "image.h"
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
+
 
 #define GL_GLEXT_PROTOTYPES
 const unsigned int SCR_WIDTH = 800;
@@ -18,6 +22,7 @@ void processInput(GLFWwindow *window);
 bool esc = true;
 int main()
 {
+
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -114,6 +119,12 @@ int main()
         glBindTexture(GL_TEXTURE_2D, image.texture);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, image2.texture);
+         glm::mat4 trans = glm::mat4(1.0f);
+         trans = glm::translate(trans,glm::vec3(0.5,0.0,0.0));
+         trans = glm::rotate(trans,(float)glfwGetTime(),glm::vec3(1.0f,1.0f,1.0f));
+
+
+    shader.setMat4("transform",trans);
         shader.setFloat("zooming", vertical);
 
         // render container
