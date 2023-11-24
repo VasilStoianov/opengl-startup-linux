@@ -9,7 +9,6 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
-
 #define GL_GLEXT_PROTOTYPES
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
@@ -119,12 +118,11 @@ int main()
         glBindTexture(GL_TEXTURE_2D, image.texture);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, image2.texture);
-         glm::mat4 trans = glm::mat4(1.0f);
-         trans = glm::translate(trans,glm::vec3(0.5,0.0,0.0));
-         trans = glm::rotate(trans,(float)glfwGetTime(),glm::vec3(1.0f,1.0f,1.0f));
+        glm::mat4 trans = glm::mat4(1.0f);
+        trans = glm::translate(trans, glm::vec3(0.5, 0.0, 0.0));
+        trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(1.0f, 1.0f, 0.0f));
 
-
-    shader.setMat4("transform",trans);
+        shader.setMat4("transform", trans);
         shader.setFloat("zooming", vertical);
 
         // render container
@@ -132,6 +130,17 @@ int main()
         // draw our first triang
         glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        float scaleAmount = static_cast<float>(sin(glfwGetTime()));
+        trans = glm::mat4(1.0f);
+        trans = glm::translate(trans, glm::vec3(scaleAmount, scaleAmount, scaleAmount));
+        unsigned int shaderUni = glGetUniformLocation(shader.ID, "transform");
+        glUniformMatrix4fv(shaderUni, 1, GL_FALSE, &trans[0][0]);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        trans = glm::mat4(1.0f);
+        trans = glm::translate(trans, glm::vec3(-static_cast<float>(cos(glfwGetTime())), static_cast<float>(cos(glfwGetTime())), scaleAmount));
+        glUniformMatrix4fv(shaderUni, 1, GL_FALSE, &trans[0][0]);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        std::cout<<"Sin time "<< scaleAmount <<" Cos time "  << -static_cast<float>(cos(glfwGetTime()))<<std::endl;
 
         // glDrawElements(GL_TRIANGLES,6, GL_UNSIGNED_INT,0);
         // glBindVertexArray(0); // no need to unbind it every time
@@ -178,15 +187,14 @@ void processInput(GLFWwindow *window)
     }
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
     {
-        
-            vertical += 0.05;
-            std::cout<<vertical<<std::endl;
-        
+
+        vertical += 0.05;
+        std::cout << vertical << std::endl;
     }
     if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
     {
-       
-            vertical -= 0.05;
-            std::cout<<vertical<<std::endl;
+
+        vertical -= 0.05;
+        std::cout << vertical << std::endl;
     }
 }
