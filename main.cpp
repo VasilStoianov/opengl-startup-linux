@@ -53,7 +53,7 @@ int main()
         return -1;
     }
 
-    Shader shader("../shader.vs", "../shader.fs");
+    Shader shader("./shader.vs", "./shader.fs");
 
     float vertices[] = {
         -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
@@ -133,9 +133,9 @@ int main()
     glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
-    Image image("./../resources/awesomeface.png", 0);
+    Image image("./resources/awesomeface.png", 0);
 
-    Image image2("./../resources/container.jpg", 1);
+    Image image2("./resources/container.jpg", 1);
     shader.use();
 
     shader.setInt("texture1", 0);
