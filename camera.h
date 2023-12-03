@@ -4,8 +4,6 @@
 #include "glm/gtc/type_ptr.hpp"
 #include <GLFW/glfw3.h>
 
-void mouse_callback(GLFWwindow *window, double xpos, double ypos);
-void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
 
 class Camera
 {
@@ -44,6 +42,9 @@ public:
 
     void rotateCamera()
     {
+        model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+        view = glm::mat4(1.0f);
+        projection = glm::mat4(1.0f);
         model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(1.0f, 0.0f, 0.5f));
         view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
         projection = glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f);
