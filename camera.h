@@ -28,7 +28,7 @@ public:
     glm::mat4 projection;
     Camera()
     {
-        yaw = -90.0f; // yaw
+        yaw = -90.0f;
         pitch = 0.0f;
         lastX = 800.0f / 2.0;
         lastY = 600.0 / 2.0;
@@ -36,7 +36,7 @@ public:
         cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
         cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
         cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-        model = glm::mat4(1.0f); // make sur
+        model = glm::mat4(1.0f);
         view = glm::mat4(1.0f);
         projection = glm::mat4(1.0f);
         radius = 10.0f;
@@ -49,7 +49,7 @@ public:
         projection = glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f);
     }
 
-    void mouseCameraMovement(double xpos,double ypos)
+    void mouseCameraMovement(double xpos, double ypos)
     {
         if (firstMouse)
         {
@@ -82,7 +82,7 @@ public:
         cameraFront = glm::normalize(direction);
     }
 
-    void scrollCameraMove( double xoffset, double yoffset)
+    void scrollCameraMove(double xoffset, double yoffset)
     {
         fov -= (float)yoffset;
         if (fov < 1.0f)
@@ -90,8 +90,4 @@ public:
         if (fov > 45.0f)
             fov = 45.0f;
     }
-
-    
-
-    
 };
