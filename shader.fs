@@ -1,16 +1,12 @@
 #version 330 core
+in vec3 ourColor;
+in vec2 texCoords;
+uniform sampler2D text;
+uniform sampler2D text2;
+uniform float opacity;
 out vec4 FragColor;
 
-in vec3 ourColor;
-in vec2 TexCoord;
+void main(){
 
-// texture samplers
-uniform sampler2D texture1;
-uniform sampler2D texture2;
-uniform float zooming;
-
-void main()
-{
-	// linearly interpolate between both textures (80% container, 20% awesomeface)
-	FragColor = mix(texture(texture1, TexCoord), texture(texture2, vec2(1.0 - TexCoord.x, TexCoord.y)), zooming);
-}
+  FragColor = mix( texture(text,vec2(texCoords.x,texCoords.y)), texture(text2,vec2(texCoords.x,texCoords.y)),opacity);
+};
